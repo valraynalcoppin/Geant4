@@ -60,52 +60,87 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         );
 
     // Detecteur
-    G4Material* detectorMaterial =
-        nist -> FindOrBuildMaterial("G4_Si");
+    G4Material* phantomMaterial =
+        nist -> FindOrBuildMaterial("G4_WATER");
 
-    G4double detectorXY = 10.0*cm;
-    G4double thickness = 1.0*cm;
-
-    G4Box* soliddetector = 
+    /*
+    G4Box* solidphantom = 
         new G4Box(
-            "detector",
-            detectorXY / 2,
-            detectorXY / 2,
-            thickness / 2
+            "Phantom",
+            20.0 *cm,
+            20.0 *cm,
+            20.0 *cm
         );
 
-    G4LogicalVolume* logicdetector =
+    G4LogicalVolume* logicphantom =
         new G4LogicalVolume(
-            soliddetector,
-            detectorMaterial,
-            "detector"
+            solidphantom,
+            phantomMaterial,
+            "phantom"
         );
 
-    G4VPhysicalVolume* physicaldetector =
+    G4VPhysicalVolume* physicalphantom =
         new G4PVPlacement(
         nullptr,
         G4ThreeVector(0., 0., 0.),
-        logicdetector,
-        "detector",
+        logicphantom,
+        "phantom",
         logicWorld,
         false,
         0,
         true
+        ); */
+
+    // Création du volume solide
+    G4Box* solidslice =
+        new G4Box(
+            "slice",
+            20.*cm,
+            20.*cm,
+            1.*mm
         );
+
+    // Création du volume logique 
+    G4LogicalVolume* logicslice =
+        new G4LogicalVolume(
+            solidslice,
+            phantomMaterial,
+            "slice"
+        );
+
+    // Création des 200 volumes physiques
+    for (G4int i = 0; i < 200; i++)
+    {
+        G4double z =
+            -20.*cm + (i + 0.5)*2.*mm;
+
+        new G4PVPlacement(
+            nullptr,
+            G4ThreeVector(0., 0., z),
+            logicslice,
+            "slice",
+            logicWorld,
+            false,
+            i,
+            true
+        );
+    }
+
+
 
 
     return physicalWorld;
 }
 void DetectorConstruction::ConstructSDandField()
 {
-    SensitiveDetector* detectorSI =
-        new SensitiveDetector("DetectorSI");
+    SensitiveDetector* sensDet =
+        new SensitiveDetector("DetectorWater");
 
     G4SDManager* sdManager =
         G4SDManager::GetSDMpointer();
 
-    sdManager->AddNewDetector(detectorSI);
+    sdManager->AddNewDetector(sensDet);
 
-    SetSensitiveDetector("detector", detectorSI);
+    SetSensitiveDetector("slice", sensDet);
 }
 

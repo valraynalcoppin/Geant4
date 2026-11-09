@@ -19,8 +19,10 @@ public :
     
     void EndOfEvent(G4HCofThisEvent* hce) override;
 
+    G4double GetEdep() const;
 private:
     G4double fEdep;
+    G4double fEdepSlice[200];
 
 };
 

@@ -3,7 +3,9 @@
 #include "G4Step.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
-
+#include "ResultsSimu.hh"
+#include "G4RunManager.hh"
+#include "G4UserRunAction.hh"
 
 SensitiveDetector::SensitiveDetector(const G4String& name)
     : G4VSensitiveDetector(name),
@@ -18,15 +20,31 @@ SensitiveDetector::~SensitiveDetector()
 void SensitiveDetector::Initialize(G4HCofThisEvent* hce)
 {
     fEdep = 0.;
+    for (G4int i=0;i<200; i++)
+    {
+        fEdepSlice[i]=0.;
+    }
 }
 
 G4bool SensitiveDetector::ProcessHits(
     G4Step* step,
     G4TouchableHistory* history)
 {
-    fEdep += step->GetTotalEnergyDeposit();
+    G4double edep = step->GetTotalEnergyDeposit();
+
+    G4int copyNumber =
+        step->GetPreStepPoint()
+            ->GetTouchableHandle()
+            ->GetCopyNumber();
+
+    fEdep += edep;
+
+    if (copyNumber >= 0 && copyNumber < 200)
+    {
+        fEdepSlice[copyNumber] += edep;
+    }
     
-    if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
+    /*if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
     {
         G4cout << "\n\n";
         G4cout <<"Particule  "
@@ -60,16 +78,37 @@ G4bool SensitiveDetector::ProcessHits(
                    << G4endl;
         }
         
-    }
+    }*/ 
 
 
     return true;
 }
 
+G4double SensitiveDetector::GetEdep() const
+{
+    return fEdep;
+}
+
 void SensitiveDetector::EndOfEvent(G4HCofThisEvent* hce)
 {
-    G4cout << "Energie deposee = "
-           << fEdep / MeV
-           << " MeV"
-           << G4endl;
+    for (G4int i = 0; i < 200; i++)
+    {
+        G4cout << "Tranche " << i
+            << " : "
+            << fEdepSlice[i]/MeV
+            << " MeV"
+            << G4endl;
+    }
+
+    ResultsSimu* runAction =
+        static_cast<ResultsSimu*>(
+            const_cast<G4UserRunAction*>(
+                G4RunManager::GetRunManager()->GetUserRunAction()
+            )
+        );
+
+    if (runAction)
+    {
+        runAction->AddEdep(fEdep);
+    }
 }

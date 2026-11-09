@@ -15,11 +15,11 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
         G4ParticleTable::GetParticleTable();
 
     G4ParticleDefinition* particle =
-        particleTable->FindParticle("e-");
+        particleTable->FindParticle("proton");
 
     fParticleGun->SetParticleDefinition(particle);
 
-    fParticleGun->SetParticleEnergy(1.0 * GeV);
+    fParticleGun->SetParticleEnergy(100.0 * MeV);
 
    
 
@@ -39,15 +39,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     G4double x = G4RandGauss::shoot(0., sigma);
     G4double y = G4RandGauss::shoot(0., sigma);
 
-    G4cout << "Position d'envoi "
+    /* G4cout << "Position d'envoi "
            << " x = " << x/ cm
            << " cm "
            << " y = " << y / cm
            << " cm "
-           << G4endl;
+           << G4endl; */ 
 
     fParticleGun->SetParticlePosition(
-        G4ThreeVector(x, y, -40. * cm)
+        G4ThreeVector(0, 0, -25. * cm)
     );
 
     fParticleGun->GeneratePrimaryVertex(event);

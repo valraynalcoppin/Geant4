@@ -1,3 +1,4 @@
+
 #ifndef ActionInitialization_h
 #define ActionInitialization_h 1
 
@@ -6,7 +7,6 @@
 class ActionInitialization : public G4VUserActionInitialization
 {
 public:
-
     ActionInitialization();
     ~ActionInitialization() override;
 
