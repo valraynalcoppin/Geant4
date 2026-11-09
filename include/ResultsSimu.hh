@@ -14,10 +14,13 @@ class ResultsSimu : public G4UserRunAction
         void BeginOfRunAction(const G4Run* run) override;
         void EndOfRunAction(const G4Run* run) override;
         void AddEdep(G4double edep);
+        void AddEventEdep(G4double const fEdepSlice[200]);
         
     private:
     G4double TotfEdep;
     G4int fNbEvents;
+    G4double fTotEdepSlice[200];
+    G4double fTotMoyEdepSlice[200];
 };
 
 #endif

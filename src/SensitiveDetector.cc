@@ -37,7 +37,7 @@ G4bool SensitiveDetector::ProcessHits(
             ->GetTouchableHandle()
             ->GetCopyNumber();
 
-    fEdep += edep;
+    fEdepSlice[copyNumber] += edep;
 
     if (copyNumber >= 0 && copyNumber < 200)
     {
@@ -91,14 +91,14 @@ G4double SensitiveDetector::GetEdep() const
 
 void SensitiveDetector::EndOfEvent(G4HCofThisEvent* hce)
 {
-    for (G4int i = 0; i < 200; i++)
+    /*for (G4int i = 0; i < 200; i++)
     {
         G4cout << "Tranche " << i
             << " : "
             << fEdepSlice[i]/MeV
             << " MeV"
             << G4endl;
-    }
+    }*/
 
     ResultsSimu* runAction =
         static_cast<ResultsSimu*>(
@@ -110,5 +110,10 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent* hce)
     if (runAction)
     {
         runAction->AddEdep(fEdep);
+    }
+
+    if (runAction)
+    {
+        runAction->AddEventEdep(fEdepSlice);
     }
 }

@@ -19,6 +19,9 @@ void ResultsSimu::BeginOfRunAction(const G4Run* run)
 {
     TotfEdep=0.;
     fNbEvents=0;
+    for (G4int i=0;i<200;i++){
+        fTotEdepSlice[i]=0;
+    }
 };
 
 
@@ -26,6 +29,15 @@ void ResultsSimu::AddEdep(G4double edep)
 {
     TotfEdep += edep;
     fNbEvents++;
+}
+
+void ResultsSimu::AddEventEdep(G4double const fEdepSlice[200])
+{
+    for (G4int i=0;i<200;i++)
+    {
+        fTotEdepSlice[i]+=fEdepSlice[i];
+        fTotMoyEdepSlice[i]=fTotEdepSlice[i]/10000;
+    }
 }
 
 void ResultsSimu::EndOfRunAction(const G4Run* run)
@@ -48,5 +60,13 @@ void ResultsSimu::EndOfRunAction(const G4Run* run)
                << " MeV"
                << G4endl;
     }*/
+    for (G4int i=0;i<200;i++)
+    {
+    G4cout << "Energy by slice of the run : "
+          << fTotEdepSlice[i]
+          << " Average Energy : "
+          << fTotMoyEdepSlice[i]
+          << G4endl;
+    }
 }
 
