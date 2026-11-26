@@ -4,59 +4,18 @@ A small Geant4 project developed to learn particle transport, detector simulatio
 
 ## Overview
 
-This project simulates a beam of high-energy electrons traveling through an air volume and interacting with a silicon detector.
+This project simulates a beam of high-energy electrons traveling through an air volume and interacting with a silicon detector at first. The second step of the project is the modelling of Bragg's peak of protons.
 
-The current simulation includes:
-
-* A cubic air world of 1 m × 1 m × 1 m
-* 1 GeV primary electrons
-* A beam traveling along the +z direction
-* A Gaussian transverse beam profile
-* A silicon detector of 10 cm × 10 cm × 1 cm
-* A custom sensitive detector
-* Energy deposition measurement in the silicon
-* Tracking of secondary particles such as gamma rays
-* Terminal-based output without graphical visualization
 
 ## Current Setup
 
 ### Primary beam
 
-The primary particle is an electron (`e-`) with:
-
-* Energy: 1 GeV
-* Initial z position: -40 cm
-* Direction: +z
-* Transverse position: Gaussian distribution
-* Beam sigma: 2 cm
-
-For each event, a new transverse position `(x, y)` is generated.
-
-### Detector
-
-The detector is made of silicon (`G4_Si`).
-
-Its dimensions are:
-
-```text
-10 cm × 10 cm × 1 cm
-```
-
-and it is centered at:
-
-```text
-(x, y, z) = (0, 0, 0)
-```
-
-Therefore, its front face is located at approximately:
-
-```text
-z = -0.5 cm
-```
+100Mev protons
 
 ## Sensitive Detector
 
-The silicon volume is associated with a custom `SensitiveDetector`.
+The silicon volume (or currently the water volume) is associated with a custom `SensitiveDetector`.
 
 For each event, the detector:
 
@@ -125,7 +84,7 @@ Then run:
 The number of simulated events is currently defined in `main.cc` using:
 
 ```cpp
-runManager->BeamOn(10);
+runManager->BeamOn(1000);
 ```
 
 ## Example Output
@@ -180,13 +139,12 @@ Planned developments include:
 * Data export
 * Multiple detector volumes
 * Beam parameter studies
-* Magnetic and electric fields
 
 ## Learning Approach
 
 This project is mainly a learning exercise.
 
-The simulation is developed progressively to understand the role of the main Geant4 components:
+The simulation is developed progressively to understand the role of the main Geant4 components
 
 ## Requirements
 
@@ -200,4 +158,4 @@ The simulation is developed progressively to understand the role of the main Gea
 
 **Work in progress**
 
-The project is currently focused on understanding the fundamentals of particle generation, transport, detector sensitivity, energy deposition, and secondary particle tracking.
+The project is currently focused on understanding CSV files and statistics of modelling results.
