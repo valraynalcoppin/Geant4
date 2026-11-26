@@ -3,6 +3,7 @@
 #include "G4Run.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
+#include <fstream>
 
 ResultsSimu::ResultsSimu()
     : G4UserRunAction(),
@@ -68,5 +69,22 @@ void ResultsSimu::EndOfRunAction(const G4Run* run)
           << fTotMoyEdepSlice[i]
           << G4endl;
     }
+
+    std::ofstream file("profil_bragg.csv");
+    if (!file.is_open())
+    {
+        G4cout << "Erreur lors de la creation du fichier" << G4endl;
+        return;
+    }
+    file << "Slice,Profondeur_cm,Energie_moyenne_MeV" << '\n';
+    for (G4int i=1; i<200; i++)
+    {
+        G4double profondeur = -20.0 + (i + 0.5) * 0.2;
+        G4double energieMoyenne = fTotEdepSlice[i] / fNbEvents / MeV;
+        file << i << ","
+            << profondeur <<","
+            << energieMoyenne << '\n';
+    }
+    file.close();
 }
 
